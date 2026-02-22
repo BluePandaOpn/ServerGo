@@ -1,0 +1,45 @@
+{
+  "projectName": "ServerGs",
+  "defaultPort": 3000,
+  "autoOpenBrowser": true,
+  "ui": {
+    "clearScreenOnMenu": true,
+    "pauseAfterAction": true
+  },
+  "scaffold": {
+    "defaultOutputDir": "generated-projects",
+    "createPublicDir": true,
+    "createLogsDir": true,
+    "createScriptsDir": true
+  },
+  "apiManager": {
+    "servicesDir": "services",
+    "defaultRuntime": "node"
+  },
+  "future": {
+    "backupsDir": "backups",
+    "autoRoadmap": true
+  },
+  "plugins": {
+    "enabled": [],
+    "defaultTimeoutSec": 120
+  },
+  "https": {
+    "enabled": true,
+    "autoGenerateCert": true,
+    "keyPath": "certs/server.key",
+    "certPath": "certs/server.crt",
+    "redirectHttp": true,
+    "httpPort": 8080
+  },
+  "automation": {
+    "startAllApisWithMainServer": false,
+    "runEnabledPluginsOnStart": false
+  },
+  "support": {
+    "repoUrl": "https://github.com/owner/servergo"
+  },
+  "python": {
+    "bannerDelayMs": 35
+  }
+}

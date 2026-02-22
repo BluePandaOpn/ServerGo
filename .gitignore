@@ -1,0 +1,8 @@
+.venv/
+.tmp/
+.servergo/
+node/node_modules/
+certs/
+*.pyc
+__pycache__/
+*.log

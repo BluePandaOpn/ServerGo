@@ -1,0 +1,14 @@
+{
+  "name": "servergo-platform",
+  "version": "1.0.0",
+  "description": "Servidor local multiuso para ServerGo",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "selfsigned": "^2.4.1"
+  }
+}

@@ -1,0 +1,10 @@
+.git
+.venv
+.servergo
+node/node_modules
+**/__pycache__
+**/*.pyc
+*.log
+.tmp
+backups
+

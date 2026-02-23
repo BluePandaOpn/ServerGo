@@ -6,6 +6,7 @@
 
 # Documentacion minima de la rama
 !README.md
+!update-repo.bat
 
 # Releases empaquetadas
 !ServerGoV*.zip

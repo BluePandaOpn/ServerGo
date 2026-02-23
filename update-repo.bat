@@ -1,5 +1,5 @@
 @echo off
-setlocal EnableExtensions
+setlocal EnableExtensions EnableDelayedExpansion
 cd /d "%~dp0"
 
 where git >nul 2>nul
@@ -39,6 +39,9 @@ if errorlevel 1 (
   exit /b 1
 )
 
+call :check_zip_size
+if errorlevel 1 exit /b 1
+
 echo [INFO] Agregando cambios...
 git add .
 if errorlevel 1 (
@@ -72,6 +75,9 @@ if errorlevel 1 (
 )
 
 :push_only
+call :check_zip_size
+if errorlevel 1 exit /b 1
+
 echo [INFO] Subiendo rama update...
 git push -u origin update
 if errorlevel 1 (
@@ -81,3 +87,28 @@ if errorlevel 1 (
 
 echo [OK] Rama update sincronizada correctamente.
 endlocal & exit /b 0
+
+:check_zip_size
+set "LIMIT_MB=95"
+set "HAS_LARGE=0"
+for %%f in (ServerGoV*.zip) do (
+  set /a MB=%%~zf/1024/1024
+  if !MB! GEQ %LIMIT_MB% (
+    echo [ERROR] Archivo local demasiado grande: %%f (!MB! MB^).
+    set "HAS_LARGE=1"
+  )
+)
+
+powershell -NoProfile -Command "$limit=95MB; $bad=@(); $files=@(git diff --name-only origin/update..HEAD -- 'ServerGoV*.zip'); foreach($f in $files){ $sRaw=(git cat-file -s ('HEAD:'+$f) 2>$null); if($LASTEXITCODE -ne 0){ continue }; $s=[int64]$sRaw; if($s -ge $limit){ $bad += ($f + ' (' + [Math]::Round($s/1MB,2) + ' MB)') } }; if($bad.Count -gt 0){ $bad | ForEach-Object { Write-Output ('[ERROR] ZIP grande en commits locales: ' + $_) }; exit 3 }"
+if errorlevel 1 (
+  set "HAS_LARGE=1"
+)
+
+if "!HAS_LARGE!"=="1" (
+  echo [ERROR] GitHub bloquea archivos mayores a 100 MB.
+  echo [INFO] Genera un ZIP liviano con:
+  echo [INFO]   build-release-zip.bat
+  echo [INFO] Este empaquetado excluye .tmp/.servergo/.venv/node_modules.
+  exit /b 1
+)
+exit /b 0

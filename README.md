@@ -41,3 +41,25 @@ Reglas:
 - `N`: version incremental por año (1, 2, 3...).
 - Si pasas texto al `.bat`, se agrega despues del prefijo.
   Ejemplo: `SN-F26-2 - Ajuste de release`.
+
+## Generar ZIP de release (recomendado)
+
+Para evitar el limite de GitHub (100 MB por archivo), genera el paquete desde `ServerGo` usando:
+
+- `build-release-zip.bat`
+
+Este script:
+
+- Lee la version desde `ServerGo/Version.sv`.
+- Crea `ServerGoV<version>.zip` en `UpDate`.
+- Excluye carpetas pesadas/no publicables:
+  - `.tmp`
+  - `.servergo`
+  - `.venv`
+  - `node_modules`
+  - `generated-projects`
+  - `certs`
+
+Luego publica:
+
+- `update-repo.bat "Release Vx.y.z"`

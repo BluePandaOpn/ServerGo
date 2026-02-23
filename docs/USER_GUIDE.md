@@ -32,8 +32,9 @@ Esta guia explica como usar ServerGo paso a paso.
 
 - **Centro de Actualizaciones**:
   - ver version
-  - listar versiones
-  - actualizar o rollback
+  - listar versiones ZIP de rama `update`
+  - instalar ultima version o una version especifica
+  - rollback desde backup local
 
 ## 3. HTTPS
 
@@ -57,7 +58,7 @@ Cuando ocurre un error, ServerGo muestra:
 
 Ejemplo:
 
-`[SG-0004] ... | Referencia: https://github.com/owner/servergo/blob/main/docs/ERROR_CODES.md#sg-0004`
+`[SG-0004] ... | Referencia: https://github.com/BluePandaOpn/ServerGo/blob/main/docs/ERROR_CODES.md#sg-0004`
 
 ## 5. Configurar URL real del repositorio
 
@@ -65,7 +66,7 @@ En `config.json`:
 
 ```json
 "support": {
-  "repoUrl": "https://github.com/TU_USUARIO/TU_REPO"
+  "repoUrl": "https://github.com/BluePandaOpn/ServerGo"
 }
 ```
 

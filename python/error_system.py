@@ -66,5 +66,8 @@ def explain_error(code: str) -> str:
 
 def _docs_repo_url() -> str:
     cfg: dict[str, Any] = load_config()
-    return str(cfg.get("support", {}).get("repoUrl", "")).rstrip("/")
+    repo = str(cfg.get("support", {}).get("repoUrl", "")).rstrip("/")
+    if not repo or "owner/servergo" in repo.lower():
+        return "https://github.com/BluePandaOpn/ServerGo"
+    return repo
 

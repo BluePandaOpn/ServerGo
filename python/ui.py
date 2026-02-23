@@ -150,10 +150,10 @@ def print_ops_menu() -> None:
 def print_update_menu() -> None:
     print(f"{ANSI.BOLD}Opciones:{ANSI.RESET}")
     print(f"{ANSI.GREEN}1){ANSI.RESET} Ver version actual")
-    print(f"{ANSI.GREEN}2){ANSI.RESET} Listar versiones disponibles")
-    print(f"{ANSI.GREEN}3){ANSI.RESET} Actualizar a ultima version")
-    print(f"{ANSI.GREEN}4){ANSI.RESET} Cambiar a una version especifica")
-    print(f"{ANSI.GREEN}5){ANSI.RESET} Rollback a referencia anterior")
+    print(f"{ANSI.GREEN}2){ANSI.RESET} Listar versiones (rama update, ZIP)")
+    print(f"{ANSI.GREEN}3){ANSI.RESET} Actualizar a la ultima version ZIP")
+    print(f"{ANSI.GREEN}4){ANSI.RESET} Instalar version especifica ZIP")
+    print(f"{ANSI.GREEN}5){ANSI.RESET} Rollback desde backup local")
     print(f"{ANSI.GREEN}0){ANSI.RESET} Volver")
 
 

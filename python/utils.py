@@ -47,7 +47,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "runEnabledPluginsOnStart": False,
     },
     "support": {
-        "repoUrl": "https://github.com/owner/servergo",
+        "repoUrl": "https://github.com/BluePandaOpn/ServerGo",
     },
     "python": {
         "bannerDelayMs": 25

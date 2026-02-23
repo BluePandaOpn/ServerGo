@@ -1,5 +1,5 @@
 {
-  "projectName": "ServerGs",
+  "projectName": "ServerGo",
   "defaultPort": 3000,
   "autoOpenBrowser": true,
   "ui": {
@@ -37,7 +37,7 @@
     "runEnabledPluginsOnStart": false
   },
   "support": {
-    "repoUrl": "https://github.com/owner/servergo"
+    "repoUrl": "https://github.com/BluePandaOpn/ServerGo"
   },
   "python": {
     "bannerDelayMs": 35

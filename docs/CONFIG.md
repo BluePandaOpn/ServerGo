@@ -23,6 +23,7 @@ Archivo principal: `config.json`
 - `automation.startAllApisWithMainServer`
 - `automation.runEnabledPluginsOnStart`
 - `support.repoUrl`
+  - Recomendado: `https://github.com/BluePandaOpn/ServerGo`
 
 ## Ejemplo minimo
 

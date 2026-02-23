@@ -84,6 +84,7 @@ Los cambios se guardan en `config.json`.
 - `run.bat plugins`
 - `run.bat https-setup`
 - `run.bat ops`
+- `run.bat docs-search <termino>`
 - `run.bat help`
 
 ## Gestor APIs Multi-Puerto
@@ -137,6 +138,9 @@ Se agrego carpeta `docs/` con documentacion avanzada:
 - `docs/DOCKER.md`
 - `docs/PLUGINS.md`
 - `docs/LICENSE-APPENDIX.md`
+- Busqueda local de documentacion:
+  - `run.bat docs-search <termino>`
+  - `scripts\docs-search.bat <termino>`
 
 ## HTTPS Facil
 
@@ -203,6 +207,7 @@ Cada `.bat` llama su `.ps1` equivalente:
 - `scripts\doctor.bat` / `scripts\doctor.ps1`
 - `scripts\create-project.bat` / `scripts\create-project.ps1`
 - `scripts\https-setup.bat` / `scripts\https-setup.ps1`
+- `scripts\docs-search.bat` / `scripts\docs-search.ps1`
 
 Los proyectos generados incluyen tambien:
 

@@ -2,7 +2,14 @@ import sys
 
 from error_system import AppError, explain_error, map_exception_to_app_error
 from api_manager import api_manager_menu
-from cli import handle_choice, operations_center, quick_https_setup, start_node_server, stop_node_server
+from cli import (
+    handle_choice,
+    operations_center,
+    quick_https_setup,
+    search_docs,
+    start_node_server,
+    stop_node_server,
+)
 from future_tools import future_tools_menu
 from plugin_system import plugin_menu
 from scaffold import run_project_scaffold_wizard
@@ -11,7 +18,10 @@ from ui import print_banner, print_menu, redraw_screen, warn
 from utils import ROOT_DIR, load_config
 
 
-def _command_mode(cmd: str) -> bool:
+def _command_mode(args: list[str]) -> bool:
+    if not args:
+        return True
+    cmd = args[0]
     try:
         if cmd == "start-server":
             start_node_server()
@@ -53,6 +63,9 @@ def _command_mode(cmd: str) -> bool:
         if cmd == "https-setup":
             quick_https_setup()
             return True
+        if cmd == "docs-search":
+            search_docs(" ".join(args[1:]).strip())
+            return True
         if cmd in {"help", "-h", "--help"}:
             print("Comandos disponibles:")
             print("  start-server   Inicia el servidor")
@@ -66,6 +79,7 @@ def _command_mode(cmd: str) -> bool:
             print("  ops            Abre centro de operaciones")
             print("  update         Abre centro de actualizaciones")
             print("  https-setup    Activa HTTPS rapido con autocert")
+            print("  docs-search    Busca texto en docs/*.md")
             print("  task           Ejecuta tarea Python demo")
             print("  help           Muestra esta ayuda")
             return True
@@ -104,7 +118,8 @@ def main() -> int:
     print_banner(project_name, banner_delay)
 
     if len(sys.argv) > 1:
-        keep_running = _command_mode(sys.argv[1].strip().lower())
+        args = [arg.strip().lower() if idx == 0 else arg for idx, arg in enumerate(sys.argv[1:])]
+        keep_running = _command_mode(args)
         return 0 if keep_running else 0
 
     _interactive_mode()

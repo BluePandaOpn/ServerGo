@@ -14,3 +14,10 @@ Indice de documentacion oficial del proyecto.
 - `docs/PLUGINS.md`: sistema de plugins
 - `docs/LICENSE-APPENDIX.md`: apendice de licencia y notas legales
 - `docs/PROJECT_MANAGEMENT.md`: gestion y release management
+
+## Busqueda rapida en docs
+
+Desde la raiz del proyecto:
+
+- `run.bat docs-search <termino>`
+- `scripts\docs-search.bat <termino>`

@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import shutil
 import ssl
 import subprocess
@@ -503,6 +504,40 @@ def operations_center() -> None:
 
         if bool(cfg.get("ui", {}).get("pauseAfterAction", True)):
             input("\nPresiona ENTER para continuar...")
+
+
+def search_docs(query: str | None = None) -> None:
+    docs_dir = ROOT_DIR / "docs"
+    if not docs_dir.exists():
+        warn("No existe la carpeta docs/.")
+        return
+    if not query:
+        warn("Debes indicar un termino. Ejemplo: run.bat docs-search update")
+        return
+
+    term = query.strip()
+    if not term:
+        warn("Termino vacio.")
+        return
+
+    pattern = re.compile(re.escape(term), re.IGNORECASE)
+    matches: list[tuple[str, int, str]] = []
+    for doc in sorted(docs_dir.glob("*.md")):
+        try:
+            content = doc.read_text(encoding="utf-8", errors="ignore").splitlines()
+        except OSError:
+            continue
+        for line_number, line in enumerate(content, start=1):
+            if pattern.search(line):
+                matches.append((doc.name, line_number, line.strip()))
+
+    if not matches:
+        info(f"Sin resultados para '{term}' en docs/*.md")
+        return
+
+    info(f"Resultados para '{term}' ({len(matches)} coincidencias):")
+    for file_name, line_number, line_text in matches:
+        print(f"- {file_name}:{line_number} | {line_text}")
 
 
 def handle_choice(choice: str) -> bool:

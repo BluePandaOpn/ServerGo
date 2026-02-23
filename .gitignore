@@ -1,0 +1,18 @@
+# Rama update: solo paquetes y metadatos minimos
+*
+
+# Mantener este archivo de reglas
+!.gitignore
+
+# Documentacion minima de la rama
+!README.md
+
+# Releases empaquetadas
+!ServerGoV*.zip
+
+# Basura temporal
+_extract/
+*.tmp
+*.log
+Thumbs.db
+.DS_Store

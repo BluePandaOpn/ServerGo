@@ -1,10 +1,10 @@
 ﻿# Rama para las actualizaciones
 
-## V0.1.2
+## V0.1.3
 
 Contenido fuente de la version:
 
-- `ServerGoV0.1.2.zip`
+- `ServerGoV0.1.3.zip`
 
 Pasos sugeridos para publicar en `update` del repo `https://github.com/BluePandaOpn/ServerGo.git`:
 
@@ -12,7 +12,7 @@ Pasos sugeridos para publicar en `update` del repo `https://github.com/BluePanda
 2. Validar rama actual: `git branch --show-current`
 3. Validar cambios: `git status`
 4. Agregar cambios: `git add .`
-5. Crear commit: `git commit -m "Release ServerGo V0.1.2"`
+5. Crear commit: `git commit -m "Release ServerGo V0.1.3"`
 6. Subir rama: `git push origin update`
 
 ## Publicacion automatica desde UpDate

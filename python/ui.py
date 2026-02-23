@@ -15,6 +15,18 @@ class ANSI:
     RED = "\033[31m"
 
 
+def _print_section(title: str) -> None:
+    print(f"{ANSI.CYAN}{ANSI.BOLD}{title}{ANSI.RESET}")
+
+
+def _print_item(key: str, label: str) -> None:
+    print(f"{ANSI.GREEN}{key:>2}){ANSI.RESET} {label}")
+
+
+def _print_separator() -> None:
+    print(f"{ANSI.DIM}{'-' * 52}{ANSI.RESET}")
+
+
 def clear_screen() -> None:
     os.system("cls" if os.name == "nt" else "clear")
 
@@ -62,107 +74,119 @@ def redraw_screen(project_name: str, title: str, clear: bool = True) -> None:
 
 
 def print_menu() -> None:
-    print(f"{ANSI.BOLD}Opciones:{ANSI.RESET}")
-    print(f"{ANSI.GREEN}1){ANSI.RESET} Arranque de servidor (asistente)")
-    print(f"{ANSI.GREEN}2){ANSI.RESET} Detener servidor actual")
-    print(f"{ANSI.GREEN}3){ANSI.RESET} Estado del servidor y entorno")
-    print(f"{ANSI.GREEN}4){ANSI.RESET} Configuraciones (facil)")
-    print(f"{ANSI.GREEN}5){ANSI.RESET} Tarea Python de ejemplo")
-    print(f"{ANSI.GREEN}6){ANSI.RESET} Gestor APIs Multi-Puerto")
-    print(f"{ANSI.GREEN}7){ANSI.RESET} Herramientas Futuras")
-    print(f"{ANSI.GREEN}8){ANSI.RESET} Sistema de Plugins")
-    print(f"{ANSI.GREEN}9){ANSI.RESET} Centro de Operaciones")
-    print(f"{ANSI.GREEN}10){ANSI.RESET} Centro de Actualizaciones")
-    print(f"{ANSI.GREEN}0){ANSI.RESET} Salir")
+    _print_section("ACCIONES PRINCIPALES")
+    _print_item("1", "Arranque de servidor (asistente)")
+    _print_item("2", "Detener servidor actual")
+    _print_item("3", "Estado del servidor y entorno")
+    _print_item("4", "Configuraciones")
+    _print_separator()
+    _print_section("HERRAMIENTAS")
+    _print_item("6", "Gestor APIs Multi-Puerto")
+    _print_item("7", "Herramientas Futuras")
+    _print_item("8", "Sistema de Plugins")
+    _print_item("9", "Centro de Operaciones")
+    _print_item("10", "Centro de Actualizaciones")
+    _print_separator()
+    _print_section("UTILIDADES")
+    _print_item("5", "Tarea Python de ejemplo")
+    _print_item("0", "Salir")
     print()
 
 
 def print_start_menu() -> None:
-    print(f"{ANSI.BOLD}Opciones:{ANSI.RESET}")
-    print(f"{ANSI.GREEN}1){ANSI.RESET} Iniciar servidor local de esta plataforma")
-    print(f"{ANSI.GREEN}2){ANSI.RESET} Crear nuevo proyecto servidor (Node.js o Python)")
-    print(f"{ANSI.GREEN}0){ANSI.RESET} Volver")
+    _print_section("ARRANQUE")
+    _print_item("1", "Iniciar servidor local de esta plataforma")
+    _print_item("2", "Crear nuevo proyecto servidor (Node.js o Python)")
+    _print_item("0", "Volver")
 
 
 def print_settings_menu() -> None:
-    print(f"{ANSI.BOLD}=== CONFIGURACIONES ==={ANSI.RESET}")
-    print(f"{ANSI.GREEN}1){ANSI.RESET} Cambiar nombre del proyecto")
-    print(f"{ANSI.GREEN}2){ANSI.RESET} Cambiar puerto del servidor")
-    print(f"{ANSI.GREEN}3){ANSI.RESET} Activar/Desactivar auto abrir navegador")
-    print(f"{ANSI.GREEN}4){ANSI.RESET} Velocidad de animacion del banner")
-    print(f"{ANSI.GREEN}5){ANSI.RESET} Activar/Desactivar limpiar pantalla")
-    print(f"{ANSI.GREEN}6){ANSI.RESET} Activar/Desactivar pausa tras accion")
-    print(f"{ANSI.GREEN}7){ANSI.RESET} Activar/Desactivar carpeta public al generar")
-    print(f"{ANSI.GREEN}8){ANSI.RESET} Activar/Desactivar carpeta logs al generar")
-    print(f"{ANSI.GREEN}9){ANSI.RESET} Cambiar carpeta base de proyectos generados")
-    print(f"{ANSI.GREEN}10){ANSI.RESET} Restaurar configuracion por defecto")
-    print(f"{ANSI.GREEN}11){ANSI.RESET} Carpeta base del gestor API multi-puerto")
-    print(f"{ANSI.GREEN}12){ANSI.RESET} Runtime por defecto del gestor API")
-    print(f"{ANSI.GREEN}13){ANSI.RESET} Carpeta de snapshots de herramientas futuras")
-    print(f"{ANSI.GREEN}14){ANSI.RESET} Activar/Desactivar auto roadmap")
-    print(f"{ANSI.GREEN}15){ANSI.RESET} Activar/Desactivar HTTPS")
-    print(f"{ANSI.GREEN}16){ANSI.RESET} Activar/Desactivar autocert HTTPS")
-    print(f"{ANSI.GREEN}17){ANSI.RESET} Activar/Desactivar redireccion HTTP->HTTPS")
-    print(f"{ANSI.GREEN}18){ANSI.RESET} Cambiar puerto HTTP de redireccion")
-    print(f"{ANSI.GREEN}19){ANSI.RESET} Auto iniciar todas las APIs con servidor principal")
-    print(f"{ANSI.GREEN}20){ANSI.RESET} Auto ejecutar plugins activos al iniciar")
-    print(f"{ANSI.GREEN}21){ANSI.RESET} Configurar URL de repositorio soporte")
-    print(f"{ANSI.GREEN}0){ANSI.RESET} Volver")
+    _print_section("CONFIGURACION GENERAL")
+    _print_item("1", "Cambiar nombre del proyecto")
+    _print_item("2", "Cambiar puerto del servidor")
+    _print_item("3", "Activar/Desactivar auto abrir navegador")
+    _print_item("4", "Velocidad de animacion del banner")
+    _print_item("5", "Activar/Desactivar limpiar pantalla")
+    _print_item("6", "Activar/Desactivar pausa tras accion")
+    _print_separator()
+    _print_section("GENERADOR DE PROYECTOS")
+    _print_item("7", "Activar/Desactivar carpeta public al generar")
+    _print_item("8", "Activar/Desactivar carpeta logs al generar")
+    _print_item("9", "Cambiar carpeta base de proyectos generados")
+    _print_item("10", "Restaurar configuracion por defecto")
+    _print_separator()
+    _print_section("GESTORES Y BACKUPS")
+    _print_item("11", "Carpeta base del gestor API multi-puerto")
+    _print_item("12", "Runtime por defecto del gestor API")
+    _print_item("13", "Carpeta de snapshots de herramientas futuras")
+    _print_item("14", "Activar/Desactivar auto roadmap")
+    _print_separator()
+    _print_section("HTTPS")
+    _print_item("15", "Activar/Desactivar HTTPS")
+    _print_item("16", "Activar/Desactivar autocert HTTPS")
+    _print_item("17", "Activar/Desactivar redireccion HTTP->HTTPS")
+    _print_item("18", "Cambiar puerto HTTP de redireccion")
+    _print_separator()
+    _print_section("AUTOMATIZACION Y SOPORTE")
+    _print_item("19", "Auto iniciar todas las APIs con servidor principal")
+    _print_item("20", "Auto ejecutar plugins activos al iniciar")
+    _print_item("21", "Configurar URL de repositorio soporte")
+    _print_item("0", "Volver")
 
 
 def print_api_menu() -> None:
-    print(f"{ANSI.BOLD}Opciones:{ANSI.RESET}")
-    print(f"{ANSI.GREEN}1){ANSI.RESET} Crear nuevo servicio API")
-    print(f"{ANSI.GREEN}2){ANSI.RESET} Listar servicios API")
-    print(f"{ANSI.GREEN}3){ANSI.RESET} Iniciar un servicio API")
-    print(f"{ANSI.GREEN}4){ANSI.RESET} Iniciar todos los servicios API")
-    print(f"{ANSI.GREEN}5){ANSI.RESET} Detener un servicio API")
-    print(f"{ANSI.GREEN}6){ANSI.RESET} Detener todos los servicios API")
-    print(f"{ANSI.GREEN}7){ANSI.RESET} Estado de servicios API")
-    print(f"{ANSI.GREEN}8){ANSI.RESET} Creacion rapida de multiples APIs")
-    print(f"{ANSI.GREEN}9){ANSI.RESET} Eliminar servicio API")
-    print(f"{ANSI.GREEN}0){ANSI.RESET} Volver")
+    _print_section("GESTOR API")
+    _print_item("1", "Crear nuevo servicio API")
+    _print_item("2", "Listar servicios API")
+    _print_item("3", "Iniciar un servicio API")
+    _print_item("4", "Iniciar todos los servicios API")
+    _print_item("5", "Detener un servicio API")
+    _print_item("6", "Detener todos los servicios API")
+    _print_item("7", "Estado de servicios API")
+    _print_item("8", "Creacion rapida de multiples APIs")
+    _print_item("9", "Eliminar servicio API")
+    _print_item("0", "Volver")
 
 
 def print_future_menu() -> None:
-    print(f"{ANSI.BOLD}Opciones:{ANSI.RESET}")
-    print(f"{ANSI.GREEN}1){ANSI.RESET} Exportar snapshot de configuracion")
-    print(f"{ANSI.GREEN}2){ANSI.RESET} Restaurar ultimo snapshot")
-    print(f"{ANSI.GREEN}3){ANSI.RESET} Limpiar estado temporal")
-    print(f"{ANSI.GREEN}4){ANSI.RESET} Ver roadmap local")
-    print(f"{ANSI.GREEN}5){ANSI.RESET} Crear roadmap si no existe")
-    print(f"{ANSI.GREEN}0){ANSI.RESET} Volver")
+    _print_section("HERRAMIENTAS FUTURAS")
+    _print_item("1", "Exportar snapshot de configuracion")
+    _print_item("2", "Restaurar ultimo snapshot")
+    _print_item("3", "Limpiar estado temporal")
+    _print_item("4", "Ver roadmap local")
+    _print_item("5", "Crear roadmap si no existe")
+    _print_item("0", "Volver")
 
 
 def print_plugin_menu() -> None:
-    print(f"{ANSI.BOLD}Opciones:{ANSI.RESET}")
-    print(f"{ANSI.GREEN}1){ANSI.RESET} Listar todos los plugins")
-    print(f"{ANSI.GREEN}2){ANSI.RESET} Listar plugins activos")
-    print(f"{ANSI.GREEN}3){ANSI.RESET} Activar plugin")
-    print(f"{ANSI.GREEN}4){ANSI.RESET} Desactivar plugin")
-    print(f"{ANSI.GREEN}5){ANSI.RESET} Ejecutar plugin")
-    print(f"{ANSI.GREEN}6){ANSI.RESET} Crear plantilla de plugin")
-    print(f"{ANSI.GREEN}0){ANSI.RESET} Volver")
+    _print_section("SISTEMA DE PLUGINS")
+    _print_item("1", "Listar todos los plugins")
+    _print_item("2", "Listar plugins activos")
+    _print_item("3", "Activar plugin")
+    _print_item("4", "Desactivar plugin")
+    _print_item("5", "Ejecutar plugin")
+    _print_item("6", "Crear plantilla de plugin")
+    _print_item("0", "Volver")
 
 
 def print_ops_menu() -> None:
-    print(f"{ANSI.BOLD}Opciones:{ANSI.RESET}")
-    print(f"{ANSI.GREEN}1){ANSI.RESET} Arranque total (servidor + APIs + plugins)")
-    print(f"{ANSI.GREEN}2){ANSI.RESET} Parada total (APIs + servidor)")
-    print(f"{ANSI.GREEN}3){ANSI.RESET} Diagnostico total")
-    print(f"{ANSI.GREEN}4){ANSI.RESET} Alternar automatizaciones")
-    print(f"{ANSI.GREEN}5){ANSI.RESET} Generar reporte operativo")
-    print(f"{ANSI.GREEN}0){ANSI.RESET} Volver")
+    _print_section("CENTRO DE OPERACIONES")
+    _print_item("1", "Arranque total (servidor + APIs + plugins)")
+    _print_item("2", "Parada total (APIs + servidor)")
+    _print_item("3", "Diagnostico total")
+    _print_item("4", "Alternar automatizaciones")
+    _print_item("5", "Generar reporte operativo")
+    _print_item("0", "Volver")
 
 
 def print_update_menu() -> None:
-    print(f"{ANSI.BOLD}Opciones:{ANSI.RESET}")
-    print(f"{ANSI.GREEN}1){ANSI.RESET} Ver version actual")
-    print(f"{ANSI.GREEN}2){ANSI.RESET} Listar versiones (rama update, ZIP)")
-    print(f"{ANSI.GREEN}3){ANSI.RESET} Actualizar a la ultima version ZIP")
-    print(f"{ANSI.GREEN}4){ANSI.RESET} Instalar version especifica ZIP")
-    print(f"{ANSI.GREEN}5){ANSI.RESET} Rollback desde backup local")
-    print(f"{ANSI.GREEN}0){ANSI.RESET} Volver")
+    _print_section("CENTRO DE ACTUALIZACIONES")
+    _print_item("1", "Ver version actual")
+    _print_item("2", "Listar versiones (rama update, ZIP)")
+    _print_item("3", "Actualizar a la ultima version ZIP")
+    _print_item("4", "Instalar version especifica ZIP")
+    _print_item("5", "Rollback desde backup local")
+    _print_item("0", "Volver")
 
 
 def info(message: str) -> None:

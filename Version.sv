@@ -1,8 +1,8 @@
 # ServerGo Version Metadata
-version=0.1.1
+version=0.1.2
 channel=stable
 release_date=2026-02-23
-build=SN-F26-2
+build=SN-F26-4
 codename=Foundation
 repo=https://github.com/BluePandaOpn/ServerGo
-notes=Base estable con sistema de actualizacion ZIP y docs de errores por archivo.
+notes=Mejoras de organizacion en README/docs y menu de consola mas ordenado.

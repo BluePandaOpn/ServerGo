@@ -1,28 +1,48 @@
 # ServerGo Docs
 
-Indice de documentacion oficial del proyecto.
+Indice oficial de documentacion del proyecto.
 
-Repositorio oficial:
+Repositorio: https://github.com/BluePandaOpn/ServerGo
 
-- https://github.com/BluePandaOpn/ServerGo
+## Ruta recomendada (primera vez)
 
-## Documentos
+1. `INSTALL.md`
+2. `USER_GUIDE.md`
+3. `CONFIG.md`
+4. `ARCHITECTURE.md`
 
-- [ARCHITECTURE.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/ARCHITECTURE.md): arquitectura general del sistema
-- [USER_GUIDE.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/USER_GUIDE.md): guia completa para usuarios
-- [CONFIG.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/CONFIG.md): configuracion completa (`config.json`)
-- [INSTALL.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/INSTALL.md): instalacion y primer arranque
-- [UPDATE_SYSTEM.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/UPDATE_SYSTEM.md): sistema de actualizaciones/versiones
-- [ERROR_CODES.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/ERROR_CODES.md): codigos de error y acciones recomendadas
-- [ERROR_MAP.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/ERROR_MAP.md): mapa de rutas de errores
-- [ERROR_TROUBLESHOOTING.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/ERROR_TROUBLESHOOTING.md): guia de diagnostico rapido
-- [VERSION_METADATA.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/VERSION_METADATA.md): metadatos en `Version.sv`
-- [DOCKER.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/DOCKER.md): uso con Docker/Docker Compose
-- [PLUGINS.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/PLUGINS.md): sistema de plugins
-- [LICENSE-APPENDIX.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/LICENSE-APPENDIX.md): apendice de licencia y notas legales
-- [PROJECT_MANAGEMENT.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/PROJECT_MANAGEMENT.md): gestion y release management
+## Documentos por categoria
 
-## Busqueda rapida en docs
+### Uso e instalacion
+
+- [INSTALL.md](INSTALL.md) - instalacion y primer arranque
+- [USER_GUIDE.md](USER_GUIDE.md) - uso diario de menus y comandos
+- [DOCKER.md](DOCKER.md) - ejecucion con Docker/Docker Compose
+
+### Operacion y plataforma
+
+- [CONFIG.md](CONFIG.md) - configuracion completa (`config.json`)
+- [PROJECT_MANAGEMENT.md](PROJECT_MANAGEMENT.md) - gestion operativa y releases
+- [UPDATE_SYSTEM.md](UPDATE_SYSTEM.md) - sistema de actualizaciones ZIP
+- [VERSION_METADATA.md](VERSION_METADATA.md) - metadata de `Version.sv`
+
+### Arquitectura y extensibilidad
+
+- [ARCHITECTURE.md](ARCHITECTURE.md) - arquitectura general
+- [PLUGINS.md](PLUGINS.md) - sistema de plugins
+
+### Errores y diagnostico
+
+- [ERROR_CODES.md](ERROR_CODES.md) - catalogo de codigos `SG-xxxx`
+- [ERROR_MAP.md](ERROR_MAP.md) - mapa de rutas de errores
+- [ERROR_TROUBLESHOOTING.md](ERROR_TROUBLESHOOTING.md) - guia de diagnostico
+- `errors/` - detalle por codigo (`SG-0001.md`, etc.)
+
+### Licencia y legal
+
+- [LICENSE-APPENDIX.md](LICENSE-APPENDIX.md) - notas legales y apendice
+
+## Busqueda local en documentacion
 
 Desde la raiz del proyecto:
 

@@ -18,8 +18,8 @@ ServerGo integra un centro de actualizaciones via paquetes ZIP publicados en la 
 
 ## Formato de versiones
 
-- Archivo remoto: `ServerGoV0.1.1.zip`
-- Nombre mostrado en menu: `ServerGo V0.1.1`
+- Archivo remoto: `ServerGoV0.1.2.zip`
+- Nombre mostrado en menu: `ServerGo V0.1.2`
 
 El sistema quita `.zip` y separa `ServerGo` de `Vx.y.z` automaticamente.
 

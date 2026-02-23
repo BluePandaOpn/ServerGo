@@ -194,6 +194,7 @@ def _create_management_scripts(project_dir: Path, runtime: str) -> None:
     _write_file(scripts / "lib.ps1", _ps_lib_template(runtime))
     _write_file(scripts / "install.ps1", _ps_install_template(runtime))
     _write_file(scripts / "start.ps1", _ps_start_template(runtime))
+    _write_file(scripts / "server-console.ps1", _ps_server_console_template())
     _write_file(scripts / "stop.ps1", _ps_stop_template())
     _write_file(scripts / "status.ps1", _ps_status_template())
     _write_file(scripts / "open.ps1", _ps_open_template())
@@ -603,9 +604,9 @@ function Get-ServerPid {{
   return $null
 }}
 
-function Save-ServerPid([int]$pid) {{
+function Save-ServerPid([int]$ServerPid) {{
   Ensure-State
-  Set-Content -Path $Script:PidFile -Value $pid -Encoding UTF8
+  Set-Content -Path $Script:PidFile -Value $ServerPid -Encoding UTF8
 }}
 
 function Clear-ServerPid {{
@@ -656,36 +657,102 @@ Write-Host "[+] Instalacion completada." -ForegroundColor Green
 """
 
 
+def _ps_server_console_template() -> str:
+    return """Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
+. "$PSScriptRoot\\lib.ps1"
+Set-Location $Script:Root
+
+function Start-ManagedServer {
+  Ensure-Prerequisites
+  $existing = Get-ServerPid
+  if ($existing) {
+    try {
+      Get-Process -Id $existing -ErrorAction Stop | Out-Null
+      return $existing
+    } catch {
+      Clear-ServerPid
+    }
+  }
+
+  Invoke-SpinnerStep "Iniciando proceso servidor"
+  $runner = "Set-Location '$Script:Root'; $Script:ServerCmd"
+  $proc = Start-Process -FilePath "powershell" -ArgumentList "-NoProfile","-Command",$runner -PassThru -WindowStyle Hidden
+  Save-ServerPid -ServerPid $proc.Id
+  return $proc.Id
+}
+
+function Stop-ManagedServer {
+  $serverPid = Get-ServerPid
+  if (-not $serverPid) {
+    Write-Host "[WARN] No hay PID guardado."
+    return
+  }
+  try {
+    Stop-Process -Id $serverPid -Force -ErrorAction Stop
+    Clear-ServerPid
+    Write-Host "[+] Servidor detenido (PID $serverPid)."
+  } catch {
+    Clear-ServerPid
+    Write-Host "[WARN] PID no encontrado, se limpio el estado."
+  }
+}
+
+function Show-Help {
+  Write-Host ""
+  Write-Host "Comandos disponibles:"
+  Write-Host "  help     Mostrar ayuda"
+  Write-Host "  status   Ver estado del servidor"
+  Write-Host "  open     Abrir URL en navegador"
+  Write-Host "  restart  Reiniciar servidor"
+  Write-Host "  stop     Detener servidor"
+  Write-Host "  pid      Ver PID actual"
+  Write-Host "  exit     Salir de esta consola"
+  Write-Host ""
+}
+
+Show-Logo
+Write-Section "Consola de control del servidor"
+$startedPid = Start-ManagedServer
+Write-Host "[+] Servidor activo en http://localhost:$($Script:Port) (PID $startedPid)."
+Show-Help
+
+while ($true) {
+  $command = (Read-Host "server").Trim().ToLowerInvariant()
+  switch ($command) {
+    "" { continue }
+    "help" { Show-Help; continue }
+    "status" { & "$PSScriptRoot\\status.ps1"; continue }
+    "open" { & "$PSScriptRoot\\open.ps1"; continue }
+    "restart" { Stop-ManagedServer; $startedPid = Start-ManagedServer; Write-Host "[+] Reiniciado (PID $startedPid)."; continue }
+    "stop" { Stop-ManagedServer; continue }
+    "pid" {
+      $current = Get-ServerPid
+      if ($current) { Write-Host "[INFO] PID: $current" } else { Write-Host "[WARN] Sin PID guardado." }
+      continue
+    }
+    "exit" { break }
+    default { Write-Host "[WARN] Comando no valido. Usa 'help'." }
+  }
+}
+"""
+
+
 def _ps_start_template(runtime: str) -> str:
-    start_cmd = "node src/server.js" if runtime == "node" else ".venv\\Scripts\\python.exe src/server.py"
     return f"""Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 . "$PSScriptRoot\\lib.ps1"
 Set-Location $Script:Root
 Show-Logo
 Write-Section "Inicio de servidor"
-Invoke-SpinnerStep "Validando estado de servidor"
-Ensure-Prerequisites
-
-$existing = Get-ServerPid
-if ($existing) {{
-  try {{
-    Get-Process -Id $existing -ErrorAction Stop | Out-Null
-    Write-Host "[INFO] El servidor ya esta activo (PID $existing)."
-    exit 0
-  }} catch {{
-    Clear-ServerPid
-  }}
+Invoke-SpinnerStep "Abriendo consola de control"
+$consoleScript = Join-Path $PSScriptRoot "server-console.ps1"
+if (-not (Test-Path $consoleScript)) {{
+  throw "No existe script de consola: $consoleScript"
 }}
-
-$logPath = Join-Path $Script:Root "logs\\server.log"
-if (-not (Test-Path (Split-Path $logPath -Parent))) {{
-  New-Item -ItemType Directory -Path (Split-Path $logPath -Parent) | Out-Null
-}}
-Invoke-SpinnerStep "Lanzando servicio en segundo plano"
-$p = Start-Process -FilePath "powershell" -ArgumentList "-NoProfile","-Command","Set-Location '$Script:Root'; {start_cmd}" -PassThru -WindowStyle Hidden
-Save-ServerPid -pid $p.Id
-Write-Host "[+] Servidor iniciado en http://localhost:$($Script:Port) (PID $($p.Id))."
+Start-Process -FilePath "powershell" -ArgumentList "-NoProfile","-ExecutionPolicy","Bypass","-File",$consoleScript | Out-Null
+Write-Host "[+] Consola de control abierta."
+Write-Host "[+] Comandos disponibles: help, status, open, restart, stop, exit"
 """
 
 

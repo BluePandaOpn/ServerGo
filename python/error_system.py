@@ -12,12 +12,12 @@ class ErrorSpec:
 
 
 ERROR_SPECS: dict[str, ErrorSpec] = {
-    "SG-0001": ErrorSpec("SG-0001", "Configuracion invalida", "Revisa config.json y docs/CONFIG.md"),
+    "SG-0001": ErrorSpec("SG-0001", "Configuracion invalida", "Revisa docs/errors/SG-0001.md"),
     "SG-0002": ErrorSpec("SG-0002", "Dependencia faltante", "Instala dependencias con scripts/install.bat"),
-    "SG-0003": ErrorSpec("SG-0003", "Operacion de red fallida", "Verifica conexion y vuelve a intentar"),
-    "SG-0004": ErrorSpec("SG-0004", "Operacion Git fallida", "Revisa docs/UPDATE_SYSTEM.md"),
-    "SG-0005": ErrorSpec("SG-0005", "Operacion de plugin fallida", "Revisa plugins/ y docs/PLUGINS.md"),
-    "SG-9999": ErrorSpec("SG-9999", "Error no controlado", "Revisa server.log y docs/ERROR_CODES.md"),
+    "SG-0003": ErrorSpec("SG-0003", "Operacion de red fallida", "Revisa docs/errors/SG-0003.md"),
+    "SG-0004": ErrorSpec("SG-0004", "Operacion Git fallida", "Revisa docs/errors/SG-0004.md"),
+    "SG-0005": ErrorSpec("SG-0005", "Operacion de plugin fallida", "Revisa docs/errors/SG-0005.md"),
+    "SG-9999": ErrorSpec("SG-9999", "Error no controlado", "Revisa docs/errors/SG-9999.md"),
 }
 
 
@@ -33,7 +33,7 @@ class AppError(RuntimeError):
         parts = [f"[{self.code}] {spec.title}: {self.message}", f"Sugerencia: {spec.hint}"]
         repo = _docs_repo_url()
         if repo:
-            parts.append(f"Referencia: {repo}/blob/main/docs/ERROR_CODES.md#{self.code.lower()}")
+            parts.append(f"Referencia: {repo}/blob/main/docs/errors/{self.code}.md")
         if self.details:
             parts.append(f"Detalles: {self.details}")
         return " | ".join(parts)
@@ -60,7 +60,7 @@ def explain_error(code: str) -> str:
     repo = _docs_repo_url()
     link = ""
     if repo:
-        link = f" | Docs: {repo}/blob/main/docs/ERROR_CODES.md#{spec.code.lower()}"
+        link = f" | Docs: {repo}/blob/main/docs/errors/{spec.code}.md"
     return f"[{spec.code}] {spec.title} | {spec.hint}{link}"
 
 

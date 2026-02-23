@@ -58,7 +58,11 @@ Cuando ocurre un error, ServerGo muestra:
 
 Ejemplo:
 
-`[SG-0004] ... | Referencia: https://github.com/BluePandaOpn/ServerGo/blob/main/docs/ERROR_CODES.md#sg-0004`
+`[SG-0004] ... | Referencia: https://github.com/BluePandaOpn/ServerGo/blob/main/docs/errors/SG-0004.md`
+
+Mapa general de errores:
+
+- `docs/ERROR_MAP.md`
 
 ## 5. Configurar URL real del repositorio
 

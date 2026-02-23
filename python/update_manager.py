@@ -346,9 +346,15 @@ def _stop_running_processes_for_update() -> None:
             except OSError:
                 pass
 
+    # Fallback: cerrar cualquier proceso cuyo comando/ruta apunte al workspace de ServerGo.
+    extra_pids = _find_processes_using_root()
+    for pid in extra_pids:
+        if _kill_pid(pid):
+            stopped += 1
+
     if stopped > 0:
         info(f"Procesos detenidos antes de actualizar: {stopped}")
-        time.sleep(0.8)
+        time.sleep(1.2)
 
 
 def _read_pid_file(path: Path) -> int | None:
@@ -374,7 +380,51 @@ def _kill_pid(pid: int) -> bool:
         cmd = ["kill", str(pid)]
 
     result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-    return result.returncode == 0
+    if result.returncode == 0:
+        return True
+    # Si el proceso ya no existe, considerarlo detenido.
+    stderr = (result.stderr or "").lower()
+    stdout = (result.stdout or "").lower()
+    text = f"{stdout}\n{stderr}"
+    if "not found" in text or "no running instance" in text or "no existe" in text:
+        return True
+    return False
+
+
+def _find_processes_using_root() -> list[int]:
+    if os.name != "nt":
+        return []
+    root_text = str(ROOT_DIR).replace("\\", "\\\\")
+    self_pid = os.getpid()
+    command = (
+        "$root='{root}';"
+        "$selfPid={self_pid};"
+        "$items=Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | "
+        "Where-Object {{ "
+        "$_.ProcessId -ne $selfPid -and ("
+        "($_.ExecutablePath -and $_.ExecutablePath -like ($root + '*')) -or "
+        "($_.CommandLine -and $_.CommandLine -like ('*' + $root + '*'))"
+        ") "
+        "}} | Select-Object -ExpandProperty ProcessId;"
+        "if($items){{ $items | ForEach-Object {{ $_ }} }}"
+    ).format(root=root_text, self_pid=self_pid)
+    result = subprocess.run(
+        ["powershell", "-NoProfile", "-Command", command],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        return []
+
+    pids: list[int] = []
+    for line in result.stdout.splitlines():
+        raw = line.strip()
+        if raw.isdigit():
+            value = int(raw)
+            if value > 0 and value != self_pid:
+                pids.append(value)
+    return sorted(set(pids))
 
 
 def _remove_path_with_retries(path: Path, retries: int = 6, delay: float = 0.35) -> None:

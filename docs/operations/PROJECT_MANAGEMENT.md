@@ -9,7 +9,7 @@ Guia de gestion para evolucionar ServerGo.
 3. Implementar en rama corta
 4. Validar scripts + menus + docs
 5. Publicar release/tag
-6. Actualizar `docs/UPDATE_SYSTEM.md`
+6. Actualizar `docs/operations/UPDATE_SYSTEM.md`
 
 ## Convencion de versiones
 
@@ -30,6 +30,6 @@ Guia de gestion para evolucionar ServerGo.
 
 - capturar codigo de error `SG-xxxx`
 - revisar `.servergo/server.log`
-- revisar `docs/ERROR_CODES.md`
+- revisar `docs/errors/ERROR_CODES.md`
 - generar reporte desde Centro de Operaciones
 

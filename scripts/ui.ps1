@@ -74,3 +74,34 @@ function Invoke-SpinnerJob {
 
   Write-Host "`r[+] $Message     "
 }
+
+function Show-LoadingDots {
+  param(
+    [Parameter(Mandatory = $true)]
+    [string]$Message,
+    [int]$Count = 8,
+    [int]$DelayMs = 90
+  )
+
+  for ($i = 0; $i -lt $Count; $i++) {
+    $dots = "." * (($i % 4) + 1)
+    Write-Host -NoNewline "`r$Message$dots   "
+    Start-Sleep -Milliseconds $DelayMs
+  }
+  Write-Host ""
+}
+
+function Show-AsciiUsageBar {
+  param(
+    [Parameter(Mandatory = $true)]
+    [string]$Label,
+    [Parameter(Mandatory = $true)]
+    [int]$Percent
+  )
+
+  $value = [Math]::Max(0, [Math]::Min(100, $Percent))
+  $size = 24
+  $fill = [Math]::Round(($value / 100.0) * $size)
+  $bar = ("#" * $fill).PadRight($size, "-")
+  Write-Host ("{0,-14} [{1}] {2,3}%" -f $Label, $bar, $value)
+}

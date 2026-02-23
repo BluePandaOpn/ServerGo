@@ -31,6 +31,25 @@ if (-not (Test-Path ".venv\Scripts\python.exe")) {
   Invoke-SpinnerStep -Message "Entorno .venv ya existe"
 }
 
+if (-not (Test-Path ".venv\Scripts\pip.exe")) {
+  Invoke-SpinnerJob -Message "Habilitando pip en .venv (ensurepip)" -Action {
+    Set-Location $using:root
+    .\.venv\Scripts\python.exe -m ensurepip --upgrade
+  }
+}
+
+if (Test-Path ".venv\Scripts\pip.exe") {
+  try {
+    Invoke-SpinnerJob -Message "Instalando soporte visual PyQt6 (plugins)" -Action {
+      Set-Location $using:root
+      .\.venv\Scripts\python.exe -m pip install --disable-pip-version-check PyQt6
+    }
+  } catch {
+    Write-Host "[WARN] No se pudo instalar PyQt6 automaticamente. Puedes instalarlo luego con:" -ForegroundColor Yellow
+    Write-Host "       .venv\\Scripts\\python.exe -m pip install PyQt6" -ForegroundColor Yellow
+  }
+}
+
 Invoke-SpinnerJob -Message "Instalando dependencias Node (npm install)" -Action {
   Set-Location (Join-Path $using:root "node")
   npm install

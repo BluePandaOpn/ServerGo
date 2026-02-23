@@ -56,7 +56,7 @@ def update_center_menu() -> None:
             elif choice == "3":
                 update_latest()
             elif choice == "4":
-                version = _safe_input("Version destino (ej: ServerGo V0.1.2 o 0.1.2): ").strip()
+                version = _safe_input("Version destino (ej: ServerGo V0.1.3 o 0.1.3): ").strip()
                 if version:
                     switch_to_version(version)
             elif choice == "5":

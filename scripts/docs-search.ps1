@@ -7,6 +7,7 @@ Set-Location $root
 if ($args.Count -eq 0) {
   Write-Host "Uso: scripts\\docs-search.ps1 <termino>"
   Write-Host "Ejemplo: scripts\\docs-search.ps1 update"
+  Write-Host "Busca en docs/**/*.md"
   exit 1
 }
 

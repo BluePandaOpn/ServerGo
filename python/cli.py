@@ -2,6 +2,7 @@ import json
 import os
 import re
 import shutil
+import socket
 import ssl
 import subprocess
 import time
@@ -17,8 +18,30 @@ from future_tools import future_tools_menu
 from plugin_system import get_plugin_summary, plugin_menu, run_enabled_plugins
 from scaffold import run_project_scaffold_wizard
 from update_manager import update_center_menu
-from ui import error, info, print_ops_menu, print_settings_menu, print_start_menu, redraw_screen, warn
-from utils import DEFAULT_CONFIG, NODE_DIR, PID_FILE, ROOT_DIR, STATE_DIR, ensure_state_dir, load_config, save_config
+from ui import (
+    error,
+    info,
+    print_main_hub_menu,
+    print_ops_menu,
+    print_platform_hub_menu,
+    print_servers_hub_menu,
+    print_settings_menu,
+    print_start_menu,
+    print_system_hub_menu,
+    redraw_screen,
+    warn,
+)
+from utils import (
+    DEFAULT_CONFIG,
+    NODE_DIR,
+    PID_FILE,
+    ROOT_DIR,
+    STATE_DIR,
+    ensure_state_dir,
+    load_config,
+    load_version_metadata,
+    save_config,
+)
 
 
 def _node_command() -> str:
@@ -248,6 +271,211 @@ def show_environment_status() -> None:
             _clear_pid()
     if not npm_ok:
         warn("Instala Node.js para habilitar el servidor local.")
+
+
+def _safe_input(prompt: str) -> str:
+    try:
+        return input(prompt)
+    except (EOFError, KeyboardInterrupt):
+        raise AppError("SG-9999", "Entrada cancelada por el usuario.")
+
+
+def _pause_if_enabled(cfg: dict) -> None:
+    if bool(cfg.get("ui", {}).get("pauseAfterAction", True)):
+        _safe_input("\nPresiona ENTER para continuar...")
+
+
+def launch_ps_console() -> None:
+    script = ROOT_DIR / "scripts" / "ps-console.ps1"
+    if not script.exists():
+        raise AppError("SG-0002", f"No existe consola PS1: {script}")
+    command = [
+        "powershell",
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        str(script),
+    ]
+    result = subprocess.run(command, cwd=str(ROOT_DIR), check=False)
+    if result.returncode != 0:
+        raise AppError("SG-0002", f"La consola PS1 finalizo con codigo {result.returncode}.")
+
+
+def _restart_node_server() -> None:
+    info("Reinicio rapido: deteniendo servidor actual...")
+    stop_node_server()
+    info("Reinicio rapido: iniciando servidor...")
+    start_node_server()
+
+
+def _tail_server_log(lines: int = 30) -> None:
+    log_file = ROOT_DIR / ".servergo" / "server.log"
+    if not log_file.exists():
+        warn(f"No existe log en {log_file}")
+        return
+
+    try:
+        content = log_file.read_text(encoding="utf-8", errors="ignore").splitlines()
+    except OSError as ex:
+        raise AppError("SG-9999", "No se pudo leer el log del servidor.", str(ex)) from ex
+
+    info(f"Mostrando ultimas {lines} lineas de {log_file.name}:")
+    for line in content[-lines:]:
+        print(line)
+
+
+def _advanced_server_diagnostics() -> None:
+    cfg = load_config()
+    https_cfg = cfg.get("https", {})
+    https_enabled = bool(https_cfg.get("enabled", False))
+    port = int(cfg.get("defaultPort", 3000))
+    pid = _read_pid()
+
+    info("Diagnostico avanzado de servidor:")
+    info(f"Directorio Node: {NODE_DIR}")
+    info(f"PID registrado: {pid if pid else 'no registrado'}")
+
+    if not NODE_DIR.exists():
+        warn("No existe el directorio node/.")
+    else:
+        has_server = (NODE_DIR / "server.js").exists()
+        has_modules = (NODE_DIR / "node_modules").exists()
+        info(f"server.js: {'SI' if has_server else 'NO'}")
+        info(f"node_modules: {'SI' if has_modules else 'NO'}")
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(0.8)
+    try:
+        in_use = sock.connect_ex(("127.0.0.1", port)) == 0
+    finally:
+        sock.close()
+    info(f"Puerto {port} en uso: {'SI' if in_use else 'NO'}")
+
+    health_ok = _is_server_responding(port, use_https=https_enabled)
+    info(f"Healthcheck {'HTTPS' if https_enabled else 'HTTP'}: {'OK' if health_ok else 'FALLA'}")
+
+    if pid:
+        pid_state = _is_pid_running(pid)
+        if pid_state is True:
+            info("PID registrado: proceso activo")
+        elif pid_state is False:
+            warn("PID registrado pero proceso no existe (se limpiara al detener/estado).")
+        else:
+            warn("No se pudo validar PID por permisos.")
+
+
+def servers_hub_menu() -> None:
+    while True:
+        cfg = load_config()
+        clear = bool(cfg.get("ui", {}).get("clearScreenOnMenu", True))
+        redraw_screen(str(cfg.get("projectName", "ServerGo Platform")), "=== SERVIDORES Y DESPLIEGUE ===", clear=clear)
+        print_servers_hub_menu()
+        choice = _safe_input("Selecciona una opcion: ").strip()
+
+        if choice == "1":
+            launch_start_hub()
+        elif choice == "2":
+            stop_node_server()
+        elif choice == "3":
+            show_environment_status()
+        elif choice == "4":
+            _restart_node_server()
+        elif choice == "5":
+            _tail_server_log()
+        elif choice == "6":
+            _advanced_server_diagnostics()
+        elif choice == "7":
+            api_manager_menu()
+        elif choice == "0":
+            return
+        else:
+            warn("Opcion no valida.")
+
+        _pause_if_enabled(cfg)
+
+
+def platform_hub_menu() -> None:
+    while True:
+        cfg = load_config()
+        clear = bool(cfg.get("ui", {}).get("clearScreenOnMenu", True))
+        redraw_screen(str(cfg.get("projectName", "ServerGo Platform")), "=== PLATAFORMA Y EXTENSIONES ===", clear=clear)
+        print_platform_hub_menu()
+        choice = _safe_input("Selecciona una opcion: ").strip()
+
+        if choice == "1":
+            configure_system()
+        elif choice == "2":
+            plugin_menu()
+        elif choice == "3":
+            future_tools_menu()
+        elif choice == "4":
+            operations_center()
+        elif choice == "5":
+            run_python_task()
+        elif choice == "0":
+            return
+        else:
+            warn("Opcion no valida.")
+
+        _pause_if_enabled(cfg)
+
+
+def system_hub_menu() -> None:
+    while True:
+        cfg = load_config()
+        clear = bool(cfg.get("ui", {}).get("clearScreenOnMenu", True))
+        redraw_screen(str(cfg.get("projectName", "ServerGo Platform")), "=== SISTEMA Y MANTENIMIENTO ===", clear=clear)
+        print_system_hub_menu()
+        choice = _safe_input("Selecciona una opcion: ").strip()
+
+        if choice == "1":
+            update_center_menu()
+        elif choice == "2":
+            term = _safe_input("Termino de busqueda en docs: ").strip()
+            search_docs(term)
+        elif choice == "3":
+            meta = load_version_metadata()
+            info(f"Version: {meta.get('version', '0.0.0')} ({meta.get('channel', 'dev')})")
+            if meta.get("build"):
+                info(f"Build: {meta.get('build')}")
+            if meta.get("release_date"):
+                info(f"Fecha: {meta.get('release_date')}")
+        elif choice == "4":
+            show_environment_status()
+            show_api_status()
+        elif choice == "5":
+            launch_ps_console()
+        elif choice == "0":
+            return
+        else:
+            warn("Opcion no valida.")
+
+        _pause_if_enabled(cfg)
+
+
+def main_hub_menu() -> bool:
+    cfg = load_config()
+    clear = bool(cfg.get("ui", {}).get("clearScreenOnMenu", True))
+    redraw_screen(str(cfg.get("projectName", "ServerGo Platform")), "=== MENU PRINCIPAL ===", clear=clear)
+    print_main_hub_menu()
+    choice = _safe_input("Selecciona una opcion: ").strip()
+
+    if choice == "1":
+        servers_hub_menu()
+        return True
+    if choice == "2":
+        platform_hub_menu()
+        return True
+    if choice == "3":
+        system_hub_menu()
+        return True
+    if choice == "0":
+        info("Saliendo...")
+        return False
+
+    warn("Opcion no valida.")
+    return True
 
 
 def configure_system() -> None:
@@ -522,17 +750,18 @@ def search_docs(query: str | None = None) -> None:
 
     pattern = re.compile(re.escape(term), re.IGNORECASE)
     matches: list[tuple[str, int, str]] = []
-    for doc in sorted(docs_dir.glob("*.md")):
+    for doc in sorted(docs_dir.rglob("*.md")):
         try:
             content = doc.read_text(encoding="utf-8", errors="ignore").splitlines()
         except OSError:
             continue
         for line_number, line in enumerate(content, start=1):
             if pattern.search(line):
-                matches.append((doc.name, line_number, line.strip()))
+                rel = str(doc.relative_to(docs_dir)).replace("\\", "/")
+                matches.append((rel, line_number, line.strip()))
 
     if not matches:
-        info(f"Sin resultados para '{term}' en docs/*.md")
+        info(f"Sin resultados para '{term}' en docs/**/*.md")
         return
 
     info(f"Resultados para '{term}' ({len(matches)} coincidencias):")

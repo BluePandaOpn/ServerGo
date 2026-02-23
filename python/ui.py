@@ -93,6 +93,50 @@ def print_menu() -> None:
     print()
 
 
+def print_main_hub_menu() -> None:
+    _print_section("MENU PRINCIPAL")
+    _print_item("1", "Servidores y despliegue")
+    _print_item("2", "Plataforma y extensiones")
+    _print_item("3", "Sistema y mantenimiento")
+    _print_item("0", "Salir")
+    print()
+
+
+def print_servers_hub_menu() -> None:
+    _print_section("CENTRO DE SERVIDORES")
+    _print_item("1", "Arranque de servidor / crear proyecto")
+    _print_item("2", "Detener servidor principal")
+    _print_item("3", "Estado de servidor y entorno")
+    _print_item("4", "Reinicio rapido del servidor principal")
+    _print_item("5", "Ver ultimas lineas del log")
+    _print_item("6", "Diagnostico avanzado de arranque")
+    _print_item("7", "Gestor APIs Multi-Puerto")
+    _print_item("0", "Volver")
+    print()
+
+
+def print_platform_hub_menu() -> None:
+    _print_section("PLATAFORMA Y EXTENSIONES")
+    _print_item("1", "Configuraciones")
+    _print_item("2", "Sistema de Plugins")
+    _print_item("3", "Herramientas Futuras")
+    _print_item("4", "Centro de Operaciones")
+    _print_item("5", "Tarea Python de ejemplo")
+    _print_item("0", "Volver")
+    print()
+
+
+def print_system_hub_menu() -> None:
+    _print_section("SISTEMA Y MANTENIMIENTO")
+    _print_item("1", "Centro de Actualizaciones")
+    _print_item("2", "Busqueda en docs")
+    _print_item("3", "Version instalada")
+    _print_item("4", "Estado completo (servidor + APIs)")
+    _print_item("5", "Centro PowerShell avanzado (PS1)")
+    _print_item("0", "Volver")
+    print()
+
+
 def print_start_menu() -> None:
     _print_section("ARRANQUE")
     _print_item("1", "Iniciar servidor local de esta plataforma")
@@ -166,6 +210,7 @@ def print_plugin_menu() -> None:
     _print_item("4", "Desactivar plugin")
     _print_item("5", "Ejecutar plugin")
     _print_item("6", "Crear plantilla de plugin")
+    _print_item("7", "Instalar plugin desde catalogo (PyQt6)")
     _print_item("0", "Volver")
 
 

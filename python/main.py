@@ -4,6 +4,8 @@ from error_system import AppError, explain_error, map_exception_to_app_error
 from api_manager import api_manager_menu
 from cli import (
     handle_choice,
+    launch_ps_console,
+    main_hub_menu,
     operations_center,
     quick_https_setup,
     search_docs,
@@ -14,7 +16,7 @@ from future_tools import future_tools_menu
 from plugin_system import plugin_menu
 from scaffold import run_project_scaffold_wizard
 from update_manager import update_center_menu
-from ui import print_banner, print_menu, redraw_screen, warn
+from ui import print_banner, warn
 from utils import ROOT_DIR, load_config, load_version_metadata
 
 
@@ -49,6 +51,9 @@ def _command_mode(args: list[str]) -> bool:
             return True
         if cmd == "update":
             update_center_menu()
+            return True
+        if cmd == "ps-console":
+            launch_ps_console()
             return True
         if cmd == "create-project":
             cfg = load_config()
@@ -88,8 +93,9 @@ def _command_mode(args: list[str]) -> bool:
             print("  plugins        Abre sistema de plugins")
             print("  ops            Abre centro de operaciones")
             print("  update         Abre centro de actualizaciones")
+            print("  ps-console     Abre centro PowerShell avanzado")
             print("  https-setup    Activa HTTPS rapido con autocert")
-            print("  docs-search    Busca texto en docs/*.md")
+            print("  docs-search    Busca texto en docs/**/*.md")
             print("  version        Muestra version y metadata")
             print("  task           Ejecuta tarea Python demo")
             print("  help           Muestra esta ayuda")
@@ -111,19 +117,15 @@ def _command_mode(args: list[str]) -> bool:
 
 def _interactive_mode() -> None:
     while True:
-        cfg = load_config()
-        clear = bool(cfg.get("ui", {}).get("clearScreenOnMenu", True))
-        redraw_screen(str(cfg.get("projectName", "ServerGo Platform")), "=== MENU PRINCIPAL ===", clear=clear)
-        print_menu()
         try:
-            choice = input("Selecciona una opcion: ").strip()
+            if not main_hub_menu():
+                break
+        except AppError as ex:
+            warn(ex.format_message())
+            break
         except (EOFError, KeyboardInterrupt):
             warn("Interrupcion detectada. Saliendo de forma segura.")
             break
-        if not handle_choice(choice):
-            break
-        if bool(cfg.get("ui", {}).get("pauseAfterAction", True)):
-            input("\nPresiona ENTER para continuar...")
 
 
 def main() -> int:

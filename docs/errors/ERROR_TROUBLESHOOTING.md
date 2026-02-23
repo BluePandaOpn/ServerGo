@@ -40,5 +40,5 @@ Guia rapida para diagnosticar errores en ServerGo.
 
 ## Referencias
 
-- `docs/ERROR_CODES.md`
-- `docs/ERROR_MAP.md`
+- `docs/errors/ERROR_CODES.md`
+- `docs/errors/ERROR_MAP.md`

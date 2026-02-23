@@ -33,6 +33,6 @@ Cada codigo tiene su archivo dedicado en `docs/errors/`.
 
 ## Rutas de soporte
 
-- Mapa: `docs/ERROR_MAP.md`
-- Guia de diagnostico: `docs/ERROR_TROUBLESHOOTING.md`
+- Mapa: `docs/errors/ERROR_MAP.md`
+- Guia de diagnostico: `docs/errors/ERROR_TROUBLESHOOTING.md`
 

@@ -52,7 +52,7 @@ if not errorlevel 1 (
   goto :push_only
 )
 
-for /f "delims=" %%m in ('powershell -NoProfile -Command "$yy=(Get-Date).ToString('yy'); $max=0; git log --pretty=format:%%s 2^>^$null ^| ForEach-Object { if($_ -match ('^SN-F'+$yy+'-(\d+)')){ $n=[int]$Matches[1]; if($n -gt $max){$max=$n} } }; Write-Output ('SN-F'+$yy+'-'+($max+1))"') do set "AUTO_TAG=%%m"
+for /f "delims=" %%m in ('powershell -NoProfile -Command "$yy=(Get-Date).ToString('yy'); $max=0; try { $subjects=@(git log --pretty=format:%%s) } catch { $subjects=@() }; foreach($s in $subjects){ if($s -match ('^SN-F'+$yy+'-(\d+)')){ $n=[int]$Matches[1]; if($n -gt $max){$max=$n} } }; Write-Output ('SN-F'+$yy+'-'+($max+1))"') do set "AUTO_TAG=%%m"
 if "%AUTO_TAG%"=="" (
   echo [ERROR] No se pudo generar etiqueta automatica SN-FYY-N.
   exit /b 1

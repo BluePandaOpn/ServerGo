@@ -24,3 +24,20 @@ Ejecuta:
 Opcional con mensaje de commit:
 
 - `update-repo.bat "Mensaje del commit"`
+
+## Regla de commits automaticos
+
+El script genera automaticamente el prefijo:
+
+- `SN-FYY-N`
+
+Ejemplo:
+
+- `SN-F26-1`
+
+Reglas:
+
+- `YY`: año en 2 digitos.
+- `N`: version incremental por año (1, 2, 3...).
+- Si pasas texto al `.bat`, se agrega despues del prefijo.
+  Ejemplo: `SN-F26-2 - Ajuste de release`.

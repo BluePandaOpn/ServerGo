@@ -7,6 +7,7 @@ CONFIG_PATH = ROOT_DIR / "config.json"
 NODE_DIR = ROOT_DIR / "node"
 STATE_DIR = ROOT_DIR / ".servergo"
 PID_FILE = STATE_DIR / "server.pid"
+VERSION_PATH = ROOT_DIR / "Version.sv"
 
 DEFAULT_CONFIG: dict[str, Any] = {
     "projectName": "ServerGo Platform",
@@ -72,6 +73,32 @@ def save_config(config: dict[str, Any]) -> None:
 
 def ensure_state_dir() -> None:
     STATE_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def load_version_metadata() -> dict[str, str]:
+    defaults = {
+        "version": "0.0.0",
+        "channel": "dev",
+        "release_date": "",
+        "build": "",
+        "codename": "",
+        "repo": "https://github.com/BluePandaOpn/ServerGo",
+        "notes": "",
+    }
+    if not VERSION_PATH.exists():
+        return defaults
+
+    result = dict(defaults)
+    for raw in VERSION_PATH.read_text(encoding="utf-8", errors="ignore").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        value = value.strip()
+        if key:
+            result[key] = value
+    return result
 
 
 def _merge_dict(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:

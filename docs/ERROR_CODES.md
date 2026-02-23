@@ -1,34 +1,38 @@
 # Error Codes
 
-Este catalogo permite mapear errores del programa a acciones concretas.
+Catalogo completo de errores de ServerGo.
 
-## sg-0001
+Cada codigo tiene su archivo dedicado en `docs/errors/`.
 
-- Titulo: Configuracion invalida
-- Accion: revisar `config.json` y `docs/CONFIG.md`
+## Errores activos del runtime
 
-## sg-0002
+- `SG-0001` Configuracion invalida
+- `SG-0002` Dependencia faltante
+- `SG-0003` Operacion de red fallida
+- `SG-0004` Operacion Git/Update fallida
+- `SG-0005` Operacion de plugin fallida
+- `SG-9999` Error no controlado
 
-- Titulo: Dependencia faltante
-- Accion: ejecutar `scripts/install.bat`
+## Errores documentados para expansion
 
-## sg-0003
+- `SG-0100` Fallo de arranque principal
+- `SG-0101` Puerto en uso
+- `SG-0102` Estado/PID inconsistente
+- `SG-0200` Configuracion corrupta
+- `SG-0201` Metadata de version invalida (`Version.sv`)
+- `SG-0300` Dependencias Node incompletas
+- `SG-0301` Dependencias Python incompletas
+- `SG-0400` Paquete de actualizacion invalido
+- `SG-0401` Integridad de actualizacion fallida
+- `SG-0500` API Manager fallo de operacion
+- `SG-0501` API Manager conflicto de puertos
+- `SG-0600` Plugin con esquema invalido
+- `SG-0700` HTTPS/Certificado invalido
+- `SG-0800` Permisos insuficientes en filesystem
+- `SG-0900` Recursos insuficientes (rendimiento/memoria)
 
-- Titulo: Operacion de red fallida
-- Accion: revisar conectividad/proxy/firewall
+## Rutas de soporte
 
-## sg-0004
-
-- Titulo: Operacion Git fallida
-- Accion: revisar `docs/UPDATE_SYSTEM.md`
-
-## sg-0005
-
-- Titulo: Operacion de plugin fallida
-- Accion: revisar `plugins/*.json` y `docs/PLUGINS.md`
-
-## sg-9999
-
-- Titulo: Error no controlado
-- Accion: revisar `.servergo/server.log` y reportar con contexto
+- Mapa: `docs/ERROR_MAP.md`
+- Guia de diagnostico: `docs/ERROR_TROUBLESHOOTING.md`
 

@@ -85,6 +85,7 @@ Los cambios se guardan en `config.json`.
 - `run.bat https-setup`
 - `run.bat ops`
 - `run.bat docs-search <termino>`
+- `run.bat version`
 - `run.bat help`
 
 ## Gestor APIs Multi-Puerto
@@ -176,16 +177,32 @@ Automatizaciones disponibles en configuracion:
 
 - Menu dedicado para versionado y cambio de releases.
 - Soporta:
-  - version actual
-  - listado de tags
-  - update latest
-  - cambio a version especifica
-  - rollback
+  - version actual (programa + estado de instalacion)
+  - listado de paquetes en rama `update` (`ServerGoV*.zip`)
+  - instalar ultima version disponible
+  - instalar version especifica
+  - rollback desde backup local
 
 Accesos:
 
 - `run.bat update`
 - `scripts/update.bat`
+
+## Metadata de Version
+
+ServerGo incluye archivo `Version.sv` en la raiz con metadatos:
+
+- version
+- channel
+- release_date
+- build
+- codename
+- repo
+- notes
+
+Se muestra debajo del logo en consola y tambien por comando:
+
+- `run.bat version`
 
 ## Sistema de Errores
 

@@ -46,6 +46,10 @@ def raise_if_false(condition: bool, code: str, message: str) -> None:
 
 def map_exception_to_app_error(ex: Exception) -> AppError:
     text = str(ex).lower()
+    if "winerror 206" in text or "demasiado largo" in text or "too long" in text:
+        return AppError("SG-0004", str(ex))
+    if "winerror 32" in text or "being used by another process" in text or "archivo porque esta siendo utilizado" in text:
+        return AppError("SG-0004", str(ex))
     if "npm" in text or "node" in text or "python" in text:
         return AppError("SG-0002", str(ex))
     if "git" in text:

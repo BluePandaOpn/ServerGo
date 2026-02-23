@@ -11,10 +11,11 @@ from zipfile import ZipFile
 
 from error_system import AppError
 from ui import info, print_update_menu, redraw_screen, warn
-from utils import ROOT_DIR, load_config
+from utils import ROOT_DIR, load_config, load_version_metadata
 
 ZIP_RE = re.compile(r"^ServerGoV(\d+(?:\.\d+)+)\.zip$")
 TMP_UPDATE_DIR = ROOT_DIR / ".tmp" / "update-installer"
+SHORT_TMP_UPDATE_DIR = ROOT_DIR / ".tmp" / "u"
 UPDATE_STATE_PATH = ROOT_DIR / ".servergo" / "update-state.json"
 BACKUP_ROOT = ROOT_DIR / ".servergo" / "update-backups"
 MAIN_PID_FILE = ROOT_DIR / ".servergo" / "server.pid"
@@ -72,6 +73,16 @@ def update_center_menu() -> None:
 
 
 def show_current_version() -> None:
+    meta = load_version_metadata()
+    info(
+        "Programa: ServerGo V{version} ({channel})".format(
+            version=meta.get("version", "0.0.0"),
+            channel=meta.get("channel", "dev"),
+        )
+    )
+    if meta.get("build"):
+        info(f"Build: {meta.get('build')}")
+
     state = _load_update_state()
     installed = str(state.get("installedRelease", "")).strip()
     if installed:
@@ -227,7 +238,8 @@ def _install_release(release: ReleasePackage) -> None:
     _stop_running_processes_for_update()
 
     TMP_UPDATE_DIR.mkdir(parents=True, exist_ok=True)
-    work_dir = TMP_UPDATE_DIR / f"{release.version_text}-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    SHORT_TMP_UPDATE_DIR.mkdir(parents=True, exist_ok=True)
+    work_dir = SHORT_TMP_UPDATE_DIR / f"{release.version_text}-{datetime.now().strftime('%y%m%d%H%M%S')}"
     extract_dir = work_dir / "extract"
     archive_path = work_dir / release.file_name
     work_dir.mkdir(parents=True, exist_ok=True)
@@ -235,18 +247,34 @@ def _install_release(release: ReleasePackage) -> None:
     archive_bytes = _run_git_bytes(["show", f"origin/update:{release.file_name}"])
     archive_path.write_bytes(archive_bytes)
 
-    with ZipFile(archive_path, "r") as zip_file:
-        zip_file.extractall(extract_dir)
+    try:
+        _safe_extract_release_archive(archive_path, extract_dir)
+    except OSError as ex:
+        details = str(ex)
+        if "WinError 206" in details or "demasiado largo" in details.lower() or "too long" in details.lower():
+            raise AppError(
+                "SG-0004",
+                "No se pudo descomprimir el paquete por rutas demasiado largas.",
+                "El paquete contiene rutas no validas para Windows; publica una version limpia sin .tmp/.servergo.",
+            ) from ex
+        raise AppError("SG-0004", "Fallo al descomprimir el paquete de actualizacion.", details) from ex
 
     source_dir = _detect_zip_root(extract_dir)
     try:
         backup_dir = _create_backup_before_replace(source_dir)
         _replace_installation_from_dir(source_dir)
-    except PermissionError as ex:
+    except OSError as ex:
+        details = str(ex)
+        if "WinError 32" in details or "being used by another process" in details.lower():
+            raise AppError(
+                "SG-0004",
+                "No se pudo reemplazar la instalacion porque hay archivos en uso.",
+                "Deten procesos activos de ServerGo y reintenta la actualizacion.",
+            ) from ex
         raise AppError(
             "SG-0004",
-            "No se pudo reemplazar la instalacion porque hay archivos en uso.",
-            "Deten procesos activos de ServerGo y reintenta la actualizacion.",
+            "No se pudo reemplazar la instalacion durante la actualizacion.",
+            details,
         ) from ex
 
     _save_update_state({"installedRelease": release.display_name})
@@ -258,6 +286,36 @@ def _detect_zip_root(extract_dir: Path) -> Path:
     if len(children) == 1 and children[0].is_dir():
         return children[0]
     return extract_dir
+
+
+def _safe_extract_release_archive(archive_path: Path, extract_dir: Path) -> None:
+    extract_dir.mkdir(parents=True, exist_ok=True)
+    with ZipFile(archive_path, "r") as zip_file:
+        for member in zip_file.infolist():
+            raw_name = member.filename.replace("\\", "/")
+            if not raw_name or raw_name.endswith("/"):
+                continue
+
+            parts = [p for p in raw_name.split("/") if p not in {"", "."}]
+            if not parts:
+                continue
+
+            # Bloquea paths peligrosos o de salida del destino.
+            if any(p == ".." for p in parts):
+                continue
+
+            # Excluye basura empaquetada por error para evitar recursiones y rutas largas.
+            if parts[0] in EXCLUDED_REPLACE_NAMES:
+                continue
+
+            target = extract_dir.joinpath(*parts)
+            target_text = str(target)
+            if len(target_text) > 240:
+                continue
+
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with zip_file.open(member, "r") as src, target.open("wb") as dst:
+                shutil.copyfileobj(src, dst)
 
 
 def _create_backup_before_replace(source_dir: Path) -> Path:

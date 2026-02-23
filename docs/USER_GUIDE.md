@@ -36,6 +36,10 @@ Esta guia explica como usar ServerGo paso a paso.
   - instalar ultima version o una version especifica
   - rollback desde backup local
 
+- **Version del programa**:
+  - se muestra debajo del logo en consola
+  - comando rapido: `run.bat version`
+
 ## 3. HTTPS
 
 Opciones:

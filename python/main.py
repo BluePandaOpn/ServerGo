@@ -15,7 +15,7 @@ from plugin_system import plugin_menu
 from scaffold import run_project_scaffold_wizard
 from update_manager import update_center_menu
 from ui import print_banner, print_menu, redraw_screen, warn
-from utils import ROOT_DIR, load_config
+from utils import ROOT_DIR, load_config, load_version_metadata
 
 
 def _command_mode(args: list[str]) -> bool:
@@ -66,6 +66,16 @@ def _command_mode(args: list[str]) -> bool:
         if cmd == "docs-search":
             search_docs(" ".join(args[1:]).strip())
             return True
+        if cmd == "version":
+            meta = load_version_metadata()
+            print("ServerGo Version")
+            print(f"  version: {meta.get('version', '0.0.0')}")
+            print(f"  channel: {meta.get('channel', 'dev')}")
+            if meta.get("build"):
+                print(f"  build:   {meta.get('build')}")
+            if meta.get("release_date"):
+                print(f"  date:    {meta.get('release_date')}")
+            return True
         if cmd in {"help", "-h", "--help"}:
             print("Comandos disponibles:")
             print("  start-server   Inicia el servidor")
@@ -80,6 +90,7 @@ def _command_mode(args: list[str]) -> bool:
             print("  update         Abre centro de actualizaciones")
             print("  https-setup    Activa HTTPS rapido con autocert")
             print("  docs-search    Busca texto en docs/*.md")
+            print("  version        Muestra version y metadata")
             print("  task           Ejecuta tarea Python demo")
             print("  help           Muestra esta ayuda")
             return True
@@ -104,7 +115,11 @@ def _interactive_mode() -> None:
         clear = bool(cfg.get("ui", {}).get("clearScreenOnMenu", True))
         redraw_screen(str(cfg.get("projectName", "ServerGo Platform")), "=== MENU PRINCIPAL ===", clear=clear)
         print_menu()
-        choice = input("Selecciona una opcion: ").strip()
+        try:
+            choice = input("Selecciona una opcion: ").strip()
+        except (EOFError, KeyboardInterrupt):
+            warn("Interrupcion detectada. Saliendo de forma segura.")
+            break
         if not handle_choice(choice):
             break
         if bool(cfg.get("ui", {}).get("pauseAfterAction", True)):
@@ -129,6 +144,9 @@ def main() -> int:
 if __name__ == "__main__":
     try:
         raise SystemExit(main())
+    except KeyboardInterrupt:
+        warn("Interrupcion detectada. Saliendo de forma segura.")
+        raise SystemExit(0)
     except AppError as ex:
         print(ex.format_message())
         raise SystemExit(1)

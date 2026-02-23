@@ -2,6 +2,8 @@ import os
 import sys
 import time
 
+from utils import load_version_metadata
+
 
 class ANSI:
     RESET = "\033[0m"
@@ -28,6 +30,11 @@ def animate_text(text: str, delay_ms: int = 35) -> None:
 
 
 def print_logo() -> None:
+    meta = load_version_metadata()
+    version = meta.get("version", "0.0.0")
+    channel = meta.get("channel", "dev")
+    build = meta.get("build", "").strip()
+    build_text = f" | build {build}" if build else ""
     print(f"{ANSI.CYAN}{ANSI.BOLD}")
     print("   _____                           _____       ")
     print("  / ____|                         / ____|      ")
@@ -35,6 +42,7 @@ def print_logo() -> None:
     print("  \\___ \\ / _ \\ '__\\ \\ / / _ \\ '__| | |_ |/ _ \\ ")
     print("  ____) |  __/ |   \\ V /  __/ |  | |__| | (_) |")
     print(" |_____/ \\___|_|    \\_/ \\___|_|   \\_____|\\___/ ")
+    print(f"{ANSI.DIM}Version V{version} ({channel}){build_text}{ANSI.RESET}")
     print(f"{ANSI.RESET}")
 
 

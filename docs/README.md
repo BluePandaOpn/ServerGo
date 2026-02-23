@@ -14,6 +14,9 @@ Repositorio oficial:
 - [INSTALL.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/INSTALL.md): instalacion y primer arranque
 - [UPDATE_SYSTEM.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/UPDATE_SYSTEM.md): sistema de actualizaciones/versiones
 - [ERROR_CODES.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/ERROR_CODES.md): codigos de error y acciones recomendadas
+- [ERROR_MAP.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/ERROR_MAP.md): mapa de rutas de errores
+- [ERROR_TROUBLESHOOTING.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/ERROR_TROUBLESHOOTING.md): guia de diagnostico rapido
+- [VERSION_METADATA.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/VERSION_METADATA.md): metadatos en `Version.sv`
 - [DOCKER.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/DOCKER.md): uso con Docker/Docker Compose
 - [PLUGINS.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/PLUGINS.md): sistema de plugins
 - [LICENSE-APPENDIX.md](https://github.com/BluePandaOpn/ServerGo/blob/main/docs/LICENSE-APPENDIX.md): apendice de licencia y notas legales
